@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/my_view"
+    android:background="@drawable/gradient"
+    tools:context=".MainActivity">
+
+
+    <EditText
+        android:id="@+id/input"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:hint="Steam32ID"
+        android:textColor="#CCFFFFFF"
+        android:textColorHighlight="#CCFFFFFF"
+        android:textColorHint="#99FFFFFF"
+        android:textColorLink="#CCFFFFFF"
+        android:textCursorDrawable="@null"
+        app:layout_constraintBottom_toBottomOf="@+id/call_js"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0"
+        android:theme="@style/Theme.App.Base">
+
+    </EditText>
+
+    <Button
+        android:id="@+id/call_js"
+        style="?android:attr/buttonBarButtonStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:filterTouchesWhenObscured="true"
+        android:maxLines="2"
+        android:text="Evaluate"
+        android:textColor="#CCFFFFFF"
+        app:layout_constraintBottom_toTopOf="@+id/webview"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/input" />
+
+    <WebView
+        android:id="@+id/webview"
+        android:layout_width="413dp"
+        android:layout_height="637dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/call_js">
+
+    </WebView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

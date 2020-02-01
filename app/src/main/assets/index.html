@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Title</title>
+	<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+	<style>
+	.main {
+		text-align: center;
+		font-size: 150%;
+		font-weight: bold;
+		margin: auto;
+    /* position: absolute; */
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+	  /* display: block;
+	  margin-left: auto;
+	  margin-right: auto; */
+	}
+</style>
+</head>
+<div id="avatar", class="main"></div>
+<div id="test"></div>
+<div id="demo"></div>
+<canvas id="myChart" width="400" height="400"></canvas>
+
+<script>
+
+// var winRate = [];
+// $.getJSON('https://api.opendota.com/api/players/137929342/heroes', function(data) {
+// 	var html = '',
+// 	el = document.getElementById("test");
+// 	$.each(data, function(key, val) {
+// 		if(key < 6){
+// 			var result = val.win/val.games;
+// 			result = Math.round(result*total)/total;
+// 			winRate[winRate.length] = result;
+// 	}
+// 	});
+// });
+
+//
+function setData(id){
+	$.getJSON('https://api.opendota.com/api/players/' + id + '/heroes', function(data) {
+		//
+		getAvatar(id)
+		//
+		var id_array = []
+		var wR = [];
+		var html = '',
+		el = document.getElementById("test");
+		$.each(data, function(key, val) {
+			if(val.games > 20){
+				// var result = val.win/val.games;
+				// result = Math.round(result*total)/total;
+				// wR[wR.length] = result;
+
+				// html +="Hero ID: "+ val.hero_id + "; Games:" + val.games + "; Win Rate:" + result + "<br\>";
+				id_array[id_array.length] = parseInt(val.hero_id);
+				// hero(parseInt(val.hero_id)-1);
+		}
+		// html = id_array;
+		});
+		hero(id_array);
+		el.innerHTML = html;
+		// chart(data);
+	});
+}
+
+//
+function getAvatar(id){
+	$.getJSON('https://api.opendota.com/api/players/' + id, function(data) {
+		var html = '',
+		el = document.getElementById("avatar");
+		html = '<img src="' + data.profile.avatarfull + '">' + "<br\>" + data.profile.personaname;
+		el.innerHTML = html;
+	});
+}
+
+//
+function hero(ids){
+	//
+	var carry_nums = 0;
+	var sup_nums = 0;
+	var dis_nums = 0;
+	var esc_nums = 0;
+	var nuker_nums = 0;
+	var ini_nums = 0;
+	var style_arr = [];
+
+	$.getJSON('https://api.opendota.com/api/heroes', function(data){
+
+		var html = '',
+		el = document.getElementById("demo");
+
+		for (i = 0; i<ids.length; i++){
+			// html += ids[i]+"<br\>";
+			$.each(data, function(key, val){
+				if(key == ids[i] - 1){
+					// html += ids[i] + " : " + val.roles + "<br\>";
+					for(j=0; j<val.roles.length; j++){
+						if(val.roles[j] == "Carry"){
+							carry_nums += 1;
+						}else if (val.roles[j] == "Support") {
+							sup_nums += 1;
+						}else if (val.roles[j] == "Disabler") {
+							dis_nums += 1;
+						}else if (val.roles[j] == "Escape") {
+							esc_nums += 1;
+						}else if (val.roles[j] == "Nuker") {
+							nuker_nums += 1;
+						}else if (val.roles[j] == "Initiator") {
+							ini_nums += 1;
+						}
+					}
+					// html = " : "+carry_nums+" : "+sup_nums+" : "+dis_nums+" : "+esc_nums+" : "+nuker_nums+" : "+ini_nums;
+				}
+			});
+			// var total = carry_nums + sup_nums + dis_nums + esc_nums + nuker_nums + ini_nums;
+			style_arr[0] = carry_nums / ids.length;
+			style_arr[1] = sup_nums / ids.length;
+			style_arr[2] = dis_nums / ids.length;
+			style_arr[3] = esc_nums / ids.length;
+			style_arr[4] = nuker_nums / ids.length;
+			style_arr[5] = ini_nums / ids.length;
+		}
+		el.innerHTML = html;
+		chart(style_arr);
+	});
+	return style_arr;
+}
+
+//
+function chart(arr){
+	var ctx = document.getElementById('myChart').getContext('2d');
+	var myChart = new Chart(ctx, {
+	    type: 'radar',
+	    data: {
+	        labels: ['Stable', 'Dedication', 'Dependable', 'Laid-back', 'Outbreak', 'Aggressive'],
+	        datasets: [{
+	            label: 'Battle Points',
+	            data: arr,
+							// pointBackgroundColor: red,
+	            backgroundColor: "rgba(255, 255, 88, 0.4)",
+							borderColor: 'transparent',
+	            // pointBackgroundColor: "transparent",
+	            // pointBorderColor: "transparent",
+	            pointHoverBackgroundColor: "transparent",
+	            pointHoverBorderColor: "transparent",
+	            pointHitRadius: 50
+	        }]
+	    },
+	    options: {
+
+				// legend: {
+        // 	display: false
+		    // },
+		    // tooltips: {
+	      //   callbacks: {
+	      //      label: function(tooltipItem) {
+	      //             return tooltipItem.yLabel;
+	      //      }
+	      //   }
+		    // }
+
+				scale: {
+					gridLines: {
+		        circular: true,
+						color: "rgba(0, 0, 0, 0.3)"
+		      },
+					ticks:{
+						beginAtZero: true,
+						max: 1,
+						min: 0,
+						stepSize: 0.2,
+						display: false
+					},
+					pointLabels:{
+            fontSize: 14,
+            fontColor: '#CCFFFFFF'
+        	}
+				}
+	   }
+	});
+
+  myChart.options.legend.display = false;
+
+}
+
+</script>
+
+</html>
